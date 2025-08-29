@@ -15,11 +15,7 @@ namespace Dotnet.Sign.App.Extensions
                  EnvironmentKey.GetVariable<string>(Constant.AWS_SECRET_MANAGER_REGION, configuration);
 
             environmentKey.RedisInformation.CacheExpirationTime =
-                EnvironmentKey.GetVariable<int>(Constant.REDIS_CACHE_ENTITY_EXPIRATION_TIME, configuration); ;
-
-            environmentKey.AppInformation.StatusToNotificate =
-                EnvironmentKey.GetVariable<string>(Constant.APP_STATUS_TO_NOTIFICATE, configuration);
-
+                EnvironmentKey.GetVariable<int>(Constant.REDIS_CACHE_ENTITY_EXPIRATION_HOURS, configuration);
         }
 
         private static async Task FillSecretManagerInformation(EnvironmentKey environmentKey, IApplicationBuilder applicationBuilder, IConfiguration configuration)

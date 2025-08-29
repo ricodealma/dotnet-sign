@@ -21,14 +21,26 @@ namespace Dotnet.Sign.Infra.Repositories
         private readonly EnvironmentKey _environmentKey = environmentKey;
         private readonly IDistributedMemoryCacheDAO _distributedMemoryCacheDAO = distributedMemoryCacheDAO;
 
-        public async Task<Tuple<ContractModel?, ErrorResult>> InsertContractAsync(ContractModel contract)
+        public async Task<Tuple<ContractModel?, ErrorResult>> InsertContractAsync(ContractModel contract, string idempotencyKey)
         {
-            var (result, error) = await _contractDAO.InsertAsync(contract.FromDomain());
+            var wasPreviouslyProcessed = _distributedMemoryCacheDAO.TryGetValue<ContractModel>(idempotencyKey, out var cachedContracts);
 
-            if (result is null)
+            if (wasPreviouslyProcessed && cachedContracts is not null)
+                return new(cachedContracts, new());
+
+            var (contractDTO, error) = await _contractDAO.InsertAsync(contract.FromDomain());
+
+            if (contractDTO is null)
                 return new(null, error);
 
-            return new(result.ToDomain(), new());
+            var contractModel = contractDTO.ToDomain();
+
+            _distributedMemoryCacheDAO.SetValue(
+                $"{idempotencyKey}",
+                JsonConvert.SerializeObject(contractModel),
+                                TimeSpan.FromHours(_environmentKey.RedisInformation.IdempotencyExpirationTime));
+
+            return new(contractModel, new());
         }
 
 
@@ -44,13 +56,14 @@ namespace Dotnet.Sign.Infra.Repositories
             if (contractDTO is null)
                 return new(null, error);
 
+            var contractModel = contractDTO.ToDomain();
 
             _distributedMemoryCacheDAO.SetValue(
                 $"{contractDTO.Id}",
-                JsonConvert.SerializeObject(contractDTO),
-                                TimeSpan.FromMinutes(_environmentKey.RedisInformation.CacheExpirationTime));
+                JsonConvert.SerializeObject(contractModel),
+                                TimeSpan.FromHours(_environmentKey.RedisInformation.CacheExpirationTime));
 
-            return new(contractDTO.ToDomain(), new());
+            return new(contractModel, new());
         }
 
         public async Task<Tuple<ContractModel?, ErrorResult>> UpdateContractStatusAsync(Guid id, ContractStatusEnum request)
@@ -59,6 +72,13 @@ namespace Dotnet.Sign.Infra.Repositories
 
             if (updatedContract is null)
                 return new(null, updateError);
+
+            _distributedMemoryCacheDAO.DeleteValue(id.ToString());
+
+            _distributedMemoryCacheDAO.SetValue(
+                $"{updatedContract.Id}",
+                JsonConvert.SerializeObject(updatedContract),
+                                TimeSpan.FromMinutes(_environmentKey.RedisInformation.CacheExpirationTime));
 
             return new(updatedContract.ToDomain(), new());
         }

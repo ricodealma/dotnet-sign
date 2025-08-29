@@ -6,7 +6,7 @@ namespace Dotnet.Sign.Domain.Aggregates.Sign
 {
     public interface ISignService
     {
-        Task<Tuple<ContractModel?, ErrorResult>> InsertContractAsync(ContractRequest contract);
+        Task<Tuple<ContractModel?, ErrorResult>> InsertContractAsync(ContractRequest contract, string idempotencyKey);
         Task<Tuple<ContractModel?, ErrorResult>> PostContractSigned(Guid id);
         Task<Tuple<ContractModel?, ErrorResult>> SelectContractByIdAsync(Guid id);
         Task<Tuple<ContractModel?, ErrorResult>> SendContractToSign(Guid id);

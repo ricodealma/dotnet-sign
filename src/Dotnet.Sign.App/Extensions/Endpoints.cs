@@ -35,9 +35,9 @@ namespace Dotnet.Sign.App.Extensions
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public static async Task<IResult> PostContract([FromBody] ContractRequest contract, [FromServices] ISignService crmService)
+        public static async Task<IResult> PostContract([FromBody] ContractRequest contract, [FromServices] ISignService crmService, [FromHeader(Name = "Idempotency-Key")] string idempotencyKey)
         {
-            var result = await crmService.InsertContractAsync(contract);
+            var result = await crmService.InsertContractAsync(contract, idempotencyKey);
 
             if (result.Item1 is null || result.Item2.Error)
                 return GenerateErrorResult(result.Item2);

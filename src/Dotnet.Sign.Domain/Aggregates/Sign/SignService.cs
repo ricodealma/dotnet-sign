@@ -17,18 +17,16 @@ namespace Dotnet.Sign.Domain.Aggregates.Sign
         private readonly EnvironmentKey _environmentKey = environmentKey;
         private readonly IAwsService _awsService = awsService;
 
-        public async Task<Tuple<ContractModel?, ErrorResult>> InsertContractAsync(ContractRequest request)
+        public async Task<Tuple<ContractModel?, ErrorResult>> InsertContractAsync(ContractRequest request, string idempotencyKey)
         {
             var contract = ContractMapper.ConvertFromRequest(request);
 
-            var (insertedContract, error) = await _contractRepository.InsertContractAsync(contract);
+            var (insertedContract, error) = await _contractRepository.InsertContractAsync(contract, idempotencyKey);
 
             if (insertedContract == null)
                 return new(null, error);
 
-            var contractResponse = insertedContract;
-
-            return new(contractResponse, error);
+            return new(insertedContract, error);
         }
         public async Task<Tuple<ContractModel?, ErrorResult>> SelectContractByIdAsync(Guid id)
         {
@@ -47,12 +45,6 @@ namespace Dotnet.Sign.Domain.Aggregates.Sign
             if (contract is null)
                 return new(null, contractError);
 
-            await Task.WhenAll(
-                _awsService.PublishContractSentToSignNotificationAsync(contract),
-                _awsService.PublishContractSentToSignWebhookAsync(contract),
-                UpdateStatusAsync(id, ContractStatusEnum.AwaitingSignature)
-            );
-
             return new(contract, contractError);
         }
         public async Task<Tuple<ContractModel?, ErrorResult>> PostContractSigned(Guid id)
@@ -62,7 +54,12 @@ namespace Dotnet.Sign.Domain.Aggregates.Sign
             if (contract is null)
                 return new(null, contractError);
 
-            return await UpdateStatusAsync(id, ContractStatusEnum.Signed); ;
+            await Task.WhenAll(
+                _awsService.PublishContractSentToSignNotificationAsync(contract),
+                _awsService.PublishContractSentToSignWebhookAsync(contract)
+            );
+
+            return await UpdateStatusAsync(id, ContractStatusEnum.Signed);
         }
 
         public async Task<Tuple<ContractModel?, ErrorResult>> UpdateStatusAsync(Guid id, ContractStatusEnum request)
