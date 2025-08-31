@@ -31,8 +31,8 @@ namespace Dotnet.Sign.App.Extensions
                     environmentKey.AwsInformation.SecretManagerInformation.Region);
             }
 
-            environmentKey.AppInformation.GatewayToken = EnvironmentKey.GetVariable<string>
-                (Constant.AWS_SECRET_MANAGER_GATEWAY_TOKEN, configuration, secrets);
+            environmentKey.AppInformation.HeaderKey = EnvironmentKey.GetVariable<string>
+                (Constant.AWS_SECRET_MANAGER_HEADER_TOKEN, configuration, secrets);
 
             environmentKey.MySqlInformation.Server = EnvironmentKey.GetVariable<string>
                 (Constant.AWS_SECRET_MANAGER_SQL_SERVER, configuration, secrets);

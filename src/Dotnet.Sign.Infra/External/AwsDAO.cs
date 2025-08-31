@@ -38,6 +38,8 @@ namespace Dotnet.Sign.Infra.External
 
         public async Task PublishContractSentToSignNotificationAsync(ContractModel contract)
         {
+            if (EnvironmentKey.TypeInformation == EnvironmentKey.Type.DEV)
+                return;
             try
             {
                 var message = JsonConvert.SerializeObject(new
@@ -64,6 +66,8 @@ namespace Dotnet.Sign.Infra.External
 
         public async Task PublishContractSentToSignWebhookAsync(ContractModel contract)
         {
+            if (EnvironmentKey.TypeInformation == EnvironmentKey.Type.DEV)
+                return;
             try
             {
                 var message = JsonConvert.SerializeObject(new
@@ -90,6 +94,8 @@ namespace Dotnet.Sign.Infra.External
 
         public async Task PublishStatusUpdatedNotificationAsync(ContractModel contract)
         {
+            if (EnvironmentKey.TypeInformation == EnvironmentKey.Type.DEV)
+                return;
             try
             {
                 var message = JsonConvert.SerializeObject(new
@@ -116,6 +122,8 @@ namespace Dotnet.Sign.Infra.External
 
         public async Task PublishStatusUpdatedWebhookAsync(ContractModel contract)
         {
+            if (EnvironmentKey.TypeInformation == EnvironmentKey.Type.DEV)
+                return;
             try
             {
                 var message = JsonConvert.SerializeObject(new

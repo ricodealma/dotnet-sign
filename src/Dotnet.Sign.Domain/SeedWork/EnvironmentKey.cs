@@ -53,7 +53,7 @@ namespace Dotnet.Sign.Domain.SeedWork
 
         public sealed class App
         {
-            public string GatewayToken { get; set; } = string.Empty;
+            public string HeaderKey { get; set; } = string.Empty;
         }
 
         public sealed class Redis
@@ -114,7 +114,8 @@ namespace Dotnet.Sign.Domain.SeedWork
                 }
                 else
                 {
-                    return (T)Convert.ChangeType(configuration[constant] ?? string.Empty, typeof(T));
+                    var envKey = constant.Replace("-", "_").ToUpperInvariant();
+                    return (T)Convert.ChangeType(configuration[envKey] ?? string.Empty, typeof(T));
                 }
             }
             catch (Exception)

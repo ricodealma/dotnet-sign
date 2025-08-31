@@ -15,7 +15,7 @@ namespace Dotnet.Sign.App.Extensions
             endpointRouteBuilder.MapGet("/health", Health);
             endpointRouteBuilder.MapPost("/v1/contract", PostContract);
             endpointRouteBuilder.MapPost("/v1/contract/{id}/callbacks/signed", PostSignedCallback);
-            endpointRouteBuilder.MapGet("/v1/contract/single", GetContractById);
+            endpointRouteBuilder.MapGet("/v1/contract/{id}", GetContractById);
         }
 
         [SwaggerOperation(
@@ -71,9 +71,9 @@ namespace Dotnet.Sign.App.Extensions
         )]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public static async Task<IResult> GetContractById([FromServices] ISignService crmService, [FromRoute] Guid contractId)
+        public static async Task<IResult> GetContractById([FromServices] ISignService crmService, [FromRoute] Guid id)
         {
-            var result = await crmService.SelectContractByIdAsync(contractId);
+            var result = await crmService.SelectContractByIdAsync(id);
 
             if (result.Item2 is not null && result.Item2.Error)
                 return GenerateErrorResult(result.Item2);

@@ -6,7 +6,7 @@ public sealed class Constant
     public const string APP_ENV_QA = "QA";
     public const string APP_ENV_PROD = "PROD";
     public const string APP_REQUEST_HEADER_KEY = "X-Api-Header";
-    public const string AWS_SECRET_MANAGER_GATEWAY_TOKEN = "x-api-header";
+    public const string AWS_SECRET_MANAGER_HEADER_TOKEN = "x-api-header";
 
     public const string APP_FILTER_SORT_CRITERIA_ASC = "asc";
     public const string APP_FILTER_SORT_CRITERIA_DESC = "desc";

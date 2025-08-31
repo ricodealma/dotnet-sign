@@ -12,7 +12,7 @@ namespace Dotnet.Sign.App.Extensions
         {
             if (!_routesWithoutAuthentication.Contains(httpContext.Request.Path))
             {
-                if (httpContext.Request.Headers[Constant.APP_REQUEST_HEADER_KEY] == _environmentKey.AppInformation.GatewayToken)
+                if (httpContext.Request.Headers[Constant.APP_REQUEST_HEADER_KEY] == _environmentKey.AppInformation.HeaderKey)
                 {
                     await _requestDelegate(httpContext);
                     return;

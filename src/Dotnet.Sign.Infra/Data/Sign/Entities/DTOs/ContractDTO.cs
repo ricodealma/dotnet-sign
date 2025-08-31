@@ -2,7 +2,7 @@
 
 namespace Dotnet.Sign.Infra.Data.Sign.Entities.DTOs
 {
-    [Table("Contract", Schema = "Sign")]
+    [Table("Contract")]
     public record ContractDTO
     {
         public Guid Id { get; set; }
