@@ -9,6 +9,7 @@ namespace Dotnet.Sign.Domain.SeedWork
         public App AppInformation { get; } = new();
         public static Type TypeInformation { get; set; } = GetEnvironment();
         public Redis RedisInformation { get; } = new();
+        public Crm CrmInformation { get; } = new();
         public sealed class Aws
         {
             public SecretManager SecretManagerInformation { get; set; } = new();
@@ -54,6 +55,10 @@ namespace Dotnet.Sign.Domain.SeedWork
         public sealed class App
         {
             public string HeaderKey { get; set; } = string.Empty;
+        }
+        public sealed class Crm
+        {
+            public string Endpoint { get; set; } = string.Empty;
         }
 
         public sealed class Redis

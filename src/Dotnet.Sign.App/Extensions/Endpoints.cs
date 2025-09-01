@@ -4,7 +4,6 @@ using Dotnet.Sign.Domain.SeedWork.ErrorResult;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
-using Dotnet.Sign.Domain.Aggregates.Sign.Entities.Database;
 
 namespace Dotnet.Sign.App.Extensions
 {
@@ -55,7 +54,7 @@ namespace Dotnet.Sign.App.Extensions
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public static async Task<IResult> PostSignedCallback([FromRoute] Guid id, [FromServices] ISignService crmService)
         {
-            Tuple<ContractModel?, ErrorResult> result = await crmService.PostContractSigned(id);
+            var result = await crmService.PostContractSigned(id);
 
             if (result.Item1 is null || result.Item2.Error)
                 return GenerateErrorResult(result.Item2);

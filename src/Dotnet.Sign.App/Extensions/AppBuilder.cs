@@ -16,6 +16,9 @@ namespace Dotnet.Sign.App.Extensions
 
             environmentKey.RedisInformation.CacheExpirationTime =
                 EnvironmentKey.GetVariable<int>(Constant.REDIS_CACHE_ENTITY_EXPIRATION_HOURS, configuration);
+
+            environmentKey.CrmInformation.Endpoint =
+                EnvironmentKey.GetVariable<string>(Constant.APP_CRM_URL, configuration);
         }
 
         private static async Task FillSecretManagerInformation(EnvironmentKey environmentKey, IApplicationBuilder applicationBuilder, IConfiguration configuration)

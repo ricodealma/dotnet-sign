@@ -18,6 +18,8 @@ public sealed class Constant
     public const string APP_REDIS_CACHE_GROUP_SEARCH_SCAN = "SCAN";
     public const string APP_REDIS_CACHE_GROUP_SEARCH_COUNT = "COUNT";
 
+    public const string APP_CRM_URL = "APP_CRM_URL";
+
     public const string APP_REDIS_CACHE_GROUP_SEARCH_TOTAL_BASE_NAME = "grouped-search:total:";
 
     public const string AWS_SECRET_MANAGER_SQL_SERVER = "sql-server";

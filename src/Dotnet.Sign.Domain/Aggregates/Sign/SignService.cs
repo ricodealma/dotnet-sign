@@ -5,15 +5,19 @@ using Dotnet.Sign.Domain.SeedWork.Mappers;
 using Dotnet.Sign.Domain.SeedWork.EnumExtensions;
 using Dotnet.Sign.Domain.Aggregates.Sign.Entities.Requests;
 using Dotnet.Sign.Domain.Aggregates.Sign.Entities.Database;
+using Dotnet.Sign.Domain.Aggregates.Crm;
+using Dotnet.Sign.Infra.External.Crm;
 
 namespace Dotnet.Sign.Domain.Aggregates.Sign
 {
     public sealed class SignService(
         IContractRepository contractRepository,
+        ICrmRepository crmRepository,
         EnvironmentKey environmentKey,
         IAwsService awsService) : ISignService
     {
         private readonly IContractRepository _contractRepository = contractRepository;
+        private readonly ICrmRepository _crmRepository = crmRepository;
         private readonly EnvironmentKey _environmentKey = environmentKey;
         private readonly IAwsService _awsService = awsService;
 
@@ -47,19 +51,19 @@ namespace Dotnet.Sign.Domain.Aggregates.Sign
 
             return new(contract, contractError);
         }
-        public async Task<Tuple<ContractModel?, ErrorResult>> PostContractSigned(Guid id)
+        public async Task<Tuple<ProposalResponse?, ErrorResult>> PostContractSigned(Guid id)
         {
             var (contract, contractError) = await _contractRepository.SelectContractByIdAsync(id);
 
             if (contract is null)
                 return new(null, contractError);
 
-            await Task.WhenAll(
-                _awsService.PublishContractSentToSignNotificationAsync(contract),
-                _awsService.PublishContractSentToSignWebhookAsync(contract)
-            );
 
-            return await UpdateStatusAsync(id, ContractStatusEnum.Signed);
+            var (updateResponse, updateError) = await UpdateStatusAsync(id, ContractStatusEnum.Signed);
+            if (updateResponse is null)
+                return new(null, updateError);
+
+            return await _crmRepository.PostSigned(contract.ProposalId);
         }
 
         public async Task<Tuple<ContractModel?, ErrorResult>> UpdateStatusAsync(Guid id, ContractStatusEnum request)

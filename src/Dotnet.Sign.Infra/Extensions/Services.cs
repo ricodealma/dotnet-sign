@@ -7,6 +7,8 @@ using Dotnet.Sign.Infra.External;
 using Dotnet.Sign.Infra.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Amazon.SecretsManager;
+using Dotnet.Sign.Domain.Aggregates.Crm;
+using Dotnet.Sign.Infra.External.Crm;
 
 namespace Dotnet.Sign.Infra.Extensions
 {
@@ -16,11 +18,13 @@ namespace Dotnet.Sign.Infra.Extensions
         {
             serviceCollection.AddScoped<IContractDAO, ContractDAO>();
             serviceCollection.AddScoped<IAwsDAO, AwsDAO>();
+            serviceCollection.AddScoped<ICrmDAO, CrmDAO>();
         }
 
         private static void AddRepositories(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped<IContractRepository, ContractRepository>();
+            serviceCollection.AddScoped<ICrmRepository, CrmRepository>();
             serviceCollection.AddScoped<IAwsRepository, AwsRepository>();
         }
 

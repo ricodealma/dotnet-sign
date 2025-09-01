@@ -98,8 +98,8 @@ namespace Dotnet.Sign.Domain.SeedWork.HTTP
             if (!string.IsNullOrEmpty(authentication.AuthorizationOrdinaryToken))
                 _httpClient.DefaultRequestHeaders.Add("Authorization", authentication.AuthorizationOrdinaryToken);
 
-            if (!string.IsNullOrEmpty(authentication.GatewayToken))
-                _httpClient.DefaultRequestHeaders.Add("Gateway-Authentication", authentication.GatewayToken);
+            if (!string.IsNullOrEmpty(authentication.XApiHeader))
+                _httpClient.DefaultRequestHeaders.Add("X-Api-Header", authentication.XApiHeader);
         }
     }
 }

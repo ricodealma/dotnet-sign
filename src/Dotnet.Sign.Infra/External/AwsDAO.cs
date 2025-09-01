@@ -1,11 +1,9 @@
-﻿using Amazon.SimpleNotificationService.Model;
-using Amazon.SimpleNotificationService;
+﻿using Amazon.SimpleNotificationService;
 using Dotnet.Sign.Domain.SeedWork;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Amazon.SecretsManager.Model;
 using Amazon.SecretsManager;
-using Dotnet.Sign.Domain.Aggregates.Sign.Entities.Database;
 
 namespace Dotnet.Sign.Infra.External
 {
@@ -33,118 +31,6 @@ namespace Dotnet.Sign.Infra.External
             {
                 _logger.LogError(JsonConvert.SerializeObject(e));
                 return [];
-            }
-        }
-
-        public async Task PublishContractSentToSignNotificationAsync(ContractModel contract)
-        {
-            if (EnvironmentKey.TypeInformation == EnvironmentKey.Type.DEV)
-                return;
-            try
-            {
-                var message = JsonConvert.SerializeObject(new
-                {
-                    EventType = "ContractSentToSign",
-                    Data = contract,
-                    Timestamp = DateTime.UtcNow
-                });
-
-                var notificationRequest = new PublishRequest()
-                {
-                    TopicArn = _environmentKey.AwsInformation.SNSInformation.NotificationTopicArn,
-                    Message = message,
-                    MessageGroupId = contract.Id.ToString(),
-                };
-
-                await _snsClient.PublishAsync(notificationRequest);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(JsonConvert.SerializeObject(e));
-            }
-        }
-
-        public async Task PublishContractSentToSignWebhookAsync(ContractModel contract)
-        {
-            if (EnvironmentKey.TypeInformation == EnvironmentKey.Type.DEV)
-                return;
-            try
-            {
-                var message = JsonConvert.SerializeObject(new
-                {
-                    EventType = "ContractSentToSign",
-                    Data = contract,
-                    Timestamp = DateTime.UtcNow
-                });
-
-                var webhookRequest = new PublishRequest
-                {
-                    TopicArn = _environmentKey.AwsInformation.SNSInformation.NotificationWebhookTopicArn,
-                    Message = message,
-                    MessageGroupId = contract.Id.ToString(),
-                };
-
-                await _snsClient.PublishAsync(webhookRequest);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(JsonConvert.SerializeObject(e));
-            }
-        }
-
-        public async Task PublishStatusUpdatedNotificationAsync(ContractModel contract)
-        {
-            if (EnvironmentKey.TypeInformation == EnvironmentKey.Type.DEV)
-                return;
-            try
-            {
-                var message = JsonConvert.SerializeObject(new
-                {
-                    EventType = "StatusUpdate",
-                    Data = contract,
-                    Timestamp = DateTime.UtcNow
-                });
-
-                var notificationRequest = new PublishRequest()
-                {
-                    TopicArn = _environmentKey.AwsInformation.SNSInformation.NotificationTopicArn,
-                    Message = message,
-                    MessageGroupId = contract.Id.ToString()
-                };
-
-                await _snsClient.PublishAsync(notificationRequest);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(JsonConvert.SerializeObject(e));
-            }
-        }
-
-        public async Task PublishStatusUpdatedWebhookAsync(ContractModel contract)
-        {
-            if (EnvironmentKey.TypeInformation == EnvironmentKey.Type.DEV)
-                return;
-            try
-            {
-                var message = JsonConvert.SerializeObject(new
-                {
-                    EventType = "StatusUpdate",
-                    Data = contract,
-                    Timestamp = DateTime.UtcNow
-                });
-
-                var webhookRequest = new PublishRequest
-                {
-                    TopicArn = _environmentKey.AwsInformation.SNSInformation.NotificationWebhookTopicArn,
-                    Message = message,
-                    MessageGroupId = contract.Id.ToString(),
-                };
-
-                await _snsClient.PublishAsync(webhookRequest);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(JsonConvert.SerializeObject(e));
             }
         }
     }

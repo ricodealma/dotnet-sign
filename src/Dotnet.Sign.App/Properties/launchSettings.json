@@ -7,7 +7,12 @@
       "launchBrowser": false,
       "applicationUrl": "http://localhost:5051",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "APP_ENV": "DEV",
+        "AWS_SECRET_MANAGER_NAME": "/dev",
+        "AWS_SECRET_MANAGER_REGION": "us-east-1",
+        "REDIS_CACHE_ENTITY_EXPIRATION_HOURS": "1",
+        "APP_CRM_URL": "http://localhost:8080"
       }
     },
     "https": {
@@ -20,7 +25,8 @@
         "APP_ENV": "DEV",
         "AWS_SECRET_MANAGER_NAME": "/dev",
         "AWS_SECRET_MANAGER_REGION": "us-east-1",
-        "REDIS_CACHE_ENTITY_EXPIRATION_HOURS": "1"
+        "REDIS_CACHE_ENTITY_EXPIRATION_HOURS": "1",
+        "APP_CRM_URL": "http://localhost:8080"
       }
     }
   }
